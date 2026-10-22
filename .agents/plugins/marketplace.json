@@ -1,0 +1,12 @@
+{
+  "name": "skill-family-test",
+  "plugins": [
+    {
+      "name": "skill-family-test",
+      "source": {
+        "source": "local",
+        "path": "./"
+      }
+    }
+  ]
+}

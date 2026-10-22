@@ -1,0 +1,22 @@
+{
+  "name": "skill-family-test",
+  "version": "0.1.0",
+  "description": "为技能族本轮变更制定有边界的测试方案，并按已接受方案组织已授权执行与结果核收。",
+  "author": {
+    "name": "广州市风荷科技有限公司"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ifoohoo/skill-family-test",
+  "keywords": [
+    "testing",
+    "codex",
+    "skill-family"
+  ],
+  "skills": "./.agents/skills/",
+  "interface": {
+    "displayName": "Skill Family Test",
+    "shortDescription": "测试规划与执行核收",
+    "developerName": "广州市风荷科技有限公司",
+    "category": "Developer Tools"
+  }
+}

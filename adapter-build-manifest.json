@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "skill-family.adapter-build-manifest",
+  "hostId": "codex",
+  "pathCategory": {
+    "id": "codex-project-skills",
+    "scope": "project",
+    "anchor": "project-root",
+    "relPath": ".agents/skills"
+  },
+  "sourceClosure": {
+    "digest": "caea2e6b1e9416e797295c2c0c0db95b6d5a310a19cfb719d3486325a03870f8",
+    "members": [
+      {
+        "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
+        "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
+        "bytes": 19713
+      },
+      {
+        "sourcePath": "skill-family-test-plan/SKILL.md",
+        "sha256": "6e1cf12c978af1c33b38d8bffe26c4c2c6e516fca20503a07eab805800750e81",
+        "bytes": 7816
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/testing-methodology.md",
+        "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
+        "bytes": 19713
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
+        "sha256": "f0df7c1c22b8e853fc7cefecc8ee963958b2984ecb94416934674c1b95fdf419",
+        "bytes": 33622
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/SOURCE.md",
+        "sha256": "a1578054a735399a26e9a4563c25886d06b915a7879b2a3c6b231d9eaaabd8cb",
+        "bytes": 719
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/test-intake.schema.json",
+        "sha256": "654e91ce518cb2b8aca84947d0c3bb8c4262ab047d86081e7e93dc07a9c6c739",
+        "bytes": 6982
+      },
+      {
+        "sourcePath": "skill-family-test-run/SKILL.md",
+        "sha256": "70ffc0114742d46df01071b111c419f439e1b6c8eea5e756cb386107aa2e453a",
+        "bytes": 7089
+      }
+    ]
+  },
+  "members": [
+    {
+      "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
+      "target": ".agents/skills/skill-family-test-plan/references/testing-methodology.md",
+      "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
+      "bytes": 19713
+    },
+    {
+      "sourcePath": "skill-family-test-plan/SKILL.md",
+      "target": ".agents/skills/skill-family-test-plan/SKILL.md",
+      "sha256": "6e1cf12c978af1c33b38d8bffe26c4c2c6e516fca20503a07eab805800750e81",
+      "bytes": 7816
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/testing-methodology.md",
+      "target": ".agents/skills/skill-family-test-run/references/testing-methodology.md",
+      "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
+      "bytes": 19713
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
+      "target": ".agents/skills/skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
+      "sha256": "f0df7c1c22b8e853fc7cefecc8ee963958b2984ecb94416934674c1b95fdf419",
+      "bytes": 33622
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/SOURCE.md",
+      "target": ".agents/skills/skill-family-test-run/references/upstream/release-skill-0.9.34/SOURCE.md",
+      "sha256": "a1578054a735399a26e9a4563c25886d06b915a7879b2a3c6b231d9eaaabd8cb",
+      "bytes": 719
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/test-intake.schema.json",
+      "target": ".agents/skills/skill-family-test-run/references/upstream/release-skill-0.9.34/test-intake.schema.json",
+      "sha256": "654e91ce518cb2b8aca84947d0c3bb8c4262ab047d86081e7e93dc07a9c6c739",
+      "bytes": 6982
+    },
+    {
+      "sourcePath": "skill-family-test-run/SKILL.md",
+      "target": ".agents/skills/skill-family-test-run/SKILL.md",
+      "sha256": "70ffc0114742d46df01071b111c419f439e1b6c8eea5e756cb386107aa2e453a",
+      "bytes": 7089
+    }
+  ],
+  "digest": "3a3b104216d1cd3f21e532a5b3f91633243bd660a5d849dc8459f96a5b9e8c23"
+}

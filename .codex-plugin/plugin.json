@@ -1,6 +1,6 @@
 {
   "name": "skill-family-test",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "为技能族本轮变更制定有边界的测试方案，并按已接受方案组织已授权执行与结果核收。",
   "author": {
     "name": "广州市风荷科技有限公司"

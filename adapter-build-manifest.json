@@ -9,7 +9,7 @@
     "relPath": ".agents/skills"
   },
   "sourceClosure": {
-    "digest": "caea2e6b1e9416e797295c2c0c0db95b6d5a310a19cfb719d3486325a03870f8",
+    "digest": "1711fe1c3db0d05d1c17ba32bf3612f53b6fd251cd10b7e0afafc1e7da76394b",
     "members": [
       {
         "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
@@ -18,8 +18,8 @@
       },
       {
         "sourcePath": "skill-family-test-plan/SKILL.md",
-        "sha256": "6e1cf12c978af1c33b38d8bffe26c4c2c6e516fca20503a07eab805800750e81",
-        "bytes": 7816
+        "sha256": "8617581415abaa31631fd2a728ee854ec9af913277243f6c0e96c9d040a6e28f",
+        "bytes": 8230
       },
       {
         "sourcePath": "skill-family-test-run/references/testing-methodology.md",
@@ -43,8 +43,8 @@
       },
       {
         "sourcePath": "skill-family-test-run/SKILL.md",
-        "sha256": "70ffc0114742d46df01071b111c419f439e1b6c8eea5e756cb386107aa2e453a",
-        "bytes": 7089
+        "sha256": "d12a0c68f7283487ad52022c966877b3585912e7ffead373da9e0d2447f3b4ee",
+        "bytes": 7452
       }
     ]
   },
@@ -58,8 +58,8 @@
     {
       "sourcePath": "skill-family-test-plan/SKILL.md",
       "target": ".agents/skills/skill-family-test-plan/SKILL.md",
-      "sha256": "6e1cf12c978af1c33b38d8bffe26c4c2c6e516fca20503a07eab805800750e81",
-      "bytes": 7816
+      "sha256": "8617581415abaa31631fd2a728ee854ec9af913277243f6c0e96c9d040a6e28f",
+      "bytes": 8230
     },
     {
       "sourcePath": "skill-family-test-run/references/testing-methodology.md",
@@ -88,9 +88,9 @@
     {
       "sourcePath": "skill-family-test-run/SKILL.md",
       "target": ".agents/skills/skill-family-test-run/SKILL.md",
-      "sha256": "70ffc0114742d46df01071b111c419f439e1b6c8eea5e756cb386107aa2e453a",
-      "bytes": 7089
+      "sha256": "d12a0c68f7283487ad52022c966877b3585912e7ffead373da9e0d2447f3b4ee",
+      "bytes": 7452
     }
   ],
-  "digest": "3a3b104216d1cd3f21e532a5b3f91633243bd660a5d849dc8459f96a5b9e8c23"
+  "digest": "ac19a9c6d12a04918929dc7fc3abf1e01af2e5f3ccc75d4ee5c68d7c7d97dd1a"
 }

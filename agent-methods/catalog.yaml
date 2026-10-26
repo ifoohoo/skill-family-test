@@ -1,0 +1,39 @@
+schemaVersion: 1
+catalog:
+  id: skill-family-test
+  version: "0.2.0"
+entries:
+  - ref: skill-family-test.plan
+    provider:
+      scope: plugin
+      plugin: skill-family-test
+      skill: skill-family-test-plan
+    kind: workflow
+    summary: "制定有边界的测试方案"
+    match:
+      domains: [testing]
+      artifactTypes: [skill-family]
+      intents: [plan]
+    accepts:
+      - "阶段、变更、原要求、证据、资产与授权"
+    produces:
+      - "调用方项目的测试计划"
+    sideEffects:
+      - write-project-artifacts
+  - ref: skill-family-test.run
+    provider:
+      scope: plugin
+      plugin: skill-family-test
+      skill: skill-family-test-run
+    kind: workflow
+    summary: "组织已授权执行并核收结果"
+    match:
+      domains: [testing]
+      artifactTypes: [skill-family]
+      intents: [run]
+    accepts:
+      - "已接受方案、对象、判据、证据与执行授权"
+    produces:
+      - "原候选的逐项结果与原接受方判读"
+    sideEffects:
+      - write-project-artifacts

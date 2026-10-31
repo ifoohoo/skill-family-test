@@ -9,22 +9,22 @@
     "relPath": ".agents/skills"
   },
   "sourceClosure": {
-    "digest": "1711fe1c3db0d05d1c17ba32bf3612f53b6fd251cd10b7e0afafc1e7da76394b",
+    "digest": "4d6a1c1a5bd0ee525245bb43d55f84c62e3650dcdcc524fdd1fb8d4d209a5673",
     "members": [
       {
         "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
-        "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
-        "bytes": 19713
+        "sha256": "557f28d41e38b0947b98c2fd62353f10e72fed7046f6ea975213c0deb595aabd",
+        "bytes": 24209
       },
       {
         "sourcePath": "skill-family-test-plan/SKILL.md",
-        "sha256": "8617581415abaa31631fd2a728ee854ec9af913277243f6c0e96c9d040a6e28f",
-        "bytes": 8230
+        "sha256": "7acdca83ea3b48943b4b76519af4daedd45312d6925cb61eaeafe6029158a4e9",
+        "bytes": 8721
       },
       {
         "sourcePath": "skill-family-test-run/references/testing-methodology.md",
-        "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
-        "bytes": 19713
+        "sha256": "557f28d41e38b0947b98c2fd62353f10e72fed7046f6ea975213c0deb595aabd",
+        "bytes": 24209
       },
       {
         "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
@@ -43,8 +43,8 @@
       },
       {
         "sourcePath": "skill-family-test-run/SKILL.md",
-        "sha256": "d12a0c68f7283487ad52022c966877b3585912e7ffead373da9e0d2447f3b4ee",
-        "bytes": 7452
+        "sha256": "2a11091385818939b6cb821e7b20e973e4573f408f68bcb699656ba7b00aea71",
+        "bytes": 7952
       }
     ]
   },
@@ -52,20 +52,20 @@
     {
       "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
       "target": ".agents/skills/skill-family-test-plan/references/testing-methodology.md",
-      "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
-      "bytes": 19713
+      "sha256": "557f28d41e38b0947b98c2fd62353f10e72fed7046f6ea975213c0deb595aabd",
+      "bytes": 24209
     },
     {
       "sourcePath": "skill-family-test-plan/SKILL.md",
       "target": ".agents/skills/skill-family-test-plan/SKILL.md",
-      "sha256": "8617581415abaa31631fd2a728ee854ec9af913277243f6c0e96c9d040a6e28f",
-      "bytes": 8230
+      "sha256": "7acdca83ea3b48943b4b76519af4daedd45312d6925cb61eaeafe6029158a4e9",
+      "bytes": 8721
     },
     {
       "sourcePath": "skill-family-test-run/references/testing-methodology.md",
       "target": ".agents/skills/skill-family-test-run/references/testing-methodology.md",
-      "sha256": "f5ef76e0380cb33f2cca78eeb032e49ca67b3ee7a6114e4629cb6f4d591c8e66",
-      "bytes": 19713
+      "sha256": "557f28d41e38b0947b98c2fd62353f10e72fed7046f6ea975213c0deb595aabd",
+      "bytes": 24209
     },
     {
       "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
@@ -88,9 +88,9 @@
     {
       "sourcePath": "skill-family-test-run/SKILL.md",
       "target": ".agents/skills/skill-family-test-run/SKILL.md",
-      "sha256": "d12a0c68f7283487ad52022c966877b3585912e7ffead373da9e0d2447f3b4ee",
-      "bytes": 7452
+      "sha256": "2a11091385818939b6cb821e7b20e973e4573f408f68bcb699656ba7b00aea71",
+      "bytes": 7952
     }
   ],
-  "digest": "ac19a9c6d12a04918929dc7fc3abf1e01af2e5f3ccc75d4ee5c68d7c7d97dd1a"
+  "digest": "b6a55322307462d3b37a7fb930fa91872c571fc5872189006fd18a8bf04c1770"
 }

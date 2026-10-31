@@ -2,7 +2,7 @@
 
 本插件面向 Codex 用户，提供两个协同入口：`skill-family-test:skill-family-test-plan` 用于制定有边界的测试方案，`skill-family-test:skill-family-test-run` 用于依据已接受方案组织已授权的真实执行或有效复用，并将结果写入调用方指定的 `resultFile`。插件不签发通过或发布授权，不新增执行器、报告协议或宿主支持。
 
-产品版本为 `0.2.0`。父工程与 `packages/skill-family-test` 工程种子均保持私有，种子版本 `0.0.0` 不是产品版本，本轮不发布 npm 包。
+本次产品版本为 `0.2.1`。父工程与 `packages/skill-family-test` 工程种子均保持私有，种子版本 `0.0.0` 不是产品版本，本轮不发布 npm 包。
 
 ---
 
@@ -13,7 +13,7 @@
 | `skill-family-test:skill-family-test-plan` | 仅制定测试方案，不执行被测对象。根据本轮变更、业务承诺和已有证据，区分本次执行、有效复用与未覆盖项。 |
 | `skill-family-test:skill-family-test-run` | 依已接受方案与用户明确授权执行，组织真实执行或复用，并将逐项结果写入调用方授权的 `resultFile`。不自动获得提交、推送或发布权限。 |
 
-随附资源位于各入口对应的 `SKILL.md` 所在目录。测试方法正文为 `references/testing-methodology.md`，修订身份为 `design-testing-methodology@0.1.1`，由生成器投影，不可单独修改。发布形态交接读取已发布 `release-skill@0.9.34` 的 `references/upstream/release-skill-0.9.34/` 原文。
+随附资源位于各入口对应的 `SKILL.md` 所在目录。测试方法正文为 `references/testing-methodology.md`，修订身份为 `design-testing-methodology@0.1.2`，由生成器投影，不可单独修改。发布形态交接读取已发布 `release-skill@0.9.34` 的 `references/upstream/release-skill-0.9.34/` 原文。
 
 本版随公开插件提供 `agent-methods/catalog.yaml`，以 `skill-family-test.plan` 和 `skill-family-test.run` 登记两个入口，供已采用方法注册中心的工程选择。目录身份与插件产品版本保持一致。设计开发流与发布流仍由各自的编排技能负责，测试方案和执行结果的职责不变。
 
@@ -25,10 +25,10 @@
 
 <!-- release-skill:capability:safe-first-command -->
 
-请严格使用以下命令，从公开仓库固定标签 `skill-family-test-v0.2.0` 安装 `0.2.0` 版本：
+请严格使用以下命令，从公开仓库固定标签 `skill-family-test-v0.2.1` 安装 `0.2.1` 版本：
 
 ```sh
-codex plugin marketplace add ifoohoo/skill-family-test --ref skill-family-test-v0.2.0
+codex plugin marketplace add ifoohoo/skill-family-test --ref skill-family-test-v0.2.1
 codex plugin add skill-family-test@skill-family-test
 ```
 
@@ -73,3 +73,4 @@ codex plugin --help
 - 公开树不含私有 SPEC、图锁、开发判据、运行记录或独立验收原件。
 
 下一步为新开 Codex 会话，调用入口并参考随附 `references/testing-methodology.md` 了解测试方法。
+

@@ -1,0 +1,316 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://skill-family-test.dev/schemas/sft-contracts/v1",
+  "title": "Skill Family Test 核心契约集合",
+  "description": "定义测试计划校验（validate-plan）、运行收据核收（record-run）、变更失效计算（invalidate-changed）与最小异构样本探针（eval-smoke）的输入输出数据结构。保持字段键名与枚举字面值稳定，所有未知扩展字段默认拒绝。",
+  "definitions": {
+    "fileRef": {
+      "type": "object",
+      "description": "项目根目录内的普通文件引用及其内容 SHA-256 摘要，用于防止原件缺失、软链接逃逸或事后篡改。",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "相对于项目根目录的 POSIX 普通文件路径，禁止以斜杠开头或包含 '..' 跳转。"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "文件原始字节的 64 位小写十六进制 SHA-256 摘要。"
+        },
+        "anchor": {
+          "type": "string",
+          "minLength": 1,
+          "description": "可选的章节或条目锚点标识，用于定位同一文件内的具体条款。"
+        }
+      }
+    },
+    "reuseSnapshot": {
+      "type": "object",
+      "description": "核验测试结论能否有效复用的六要素快照（对象身份、对象形态、工具版本、判据版本、运行环境与覆盖范围）。",
+      "additionalProperties": false,
+      "properties": {
+        "verdict": { "type": "string", "minLength": 1 },
+        "historicalOnly": { "type": "boolean" },
+        "objectIdentity": { "type": "string", "minLength": 1 },
+        "objectKind": { "type": "string", "minLength": 1 },
+        "toolVersion": { "type": "string", "minLength": 1 },
+        "criterionVersion": { "type": "string", "minLength": 1 },
+        "environment": { "type": "string", "minLength": 1 },
+        "scope": { "type": "string", "minLength": 1 }
+      }
+    },
+    "testPlan": {
+      "type": "object",
+      "description": "制定完成、待执行前核验的测试方案（对应 sft validate-plan 输入）。规划阶段只划分覆盖状态，不得预填通过结论。",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "stage", "methodRevision", "stopCondition", "bindings", "items"],
+      "properties": {
+        "schemaVersion": {
+          "const": 1,
+          "description": "测试计划契约版本号，当前固定为 1。"
+        },
+        "stage": {
+          "type": "string",
+          "enum": ["development-baseline", "candidate-delivery", "stable-acceptance", "开发基线", "候选交付", "稳定业务验收"],
+          "description": "本轮测试所处的交付阶段，决定是否允许保留明确披露的未验证项。"
+        },
+        "methodRevision": {
+          "type": "string",
+          "minLength": 1,
+          "description": "所依据的测试方法修订身份（如 design-testing-methodology@0.1.2）。"
+        },
+        "firstBaseline": {
+          "type": "boolean",
+          "description": "是否为该项目首次建立测试基线；为 true 时必须同时安排代表性正常路径与风险失败路径。"
+        },
+        "stopCondition": {
+          "type": "string",
+          "minLength": 1,
+          "description": "达到约定覆盖后立即停止测试的明确条件，防止向无关宿主或模型组合无限蔓延。"
+        },
+        "acceptanceCriteria": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string", "minLength": 1 },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["id"],
+                "properties": {
+                  "id": { "type": "string", "minLength": 1, "description": "业务验收条件唯一编号（如 AC-1）。" },
+                  "description": { "type": "string", "description": "验收条件对应的用户可见业务结果说明。" },
+                  "requireDirectBehavior": { "type": "boolean", "description": "是否强制要求至少一条真实直接行为层（integration / e2e / cli-smoke / direct-behavior 或 verificationDepth: 'direct'）用例覆盖。" }
+                }
+              }
+            ]
+          },
+          "description": "本轮必须承接的业务验收条目列表（支持字符串编号如 AC-1，或含 id、description、requireDirectBehavior 的结构化声明），用于核查每项验收条件是否具备真实行为验证覆盖。"
+        },
+        "bindings": {
+          "type": "object",
+          "description": "测试计划绑定的上游设计文档、要求清单或发布候选载荷摘要。",
+          "additionalProperties": false,
+          "properties": {
+            "designDocs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/fileRef" },
+              "description": "本轮测试依据的设计或规格文档引用列表。"
+            },
+            "requirementsRef": {
+              "$ref": "#/definitions/fileRef",
+              "description": "测试要求附件引用（如 requirements.json）。"
+            },
+            "candidateRef": {
+              "$ref": "#/definitions/fileRef",
+              "description": "待验收的候选产物或构建清单引用。"
+            }
+          }
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "description": "逐项列出的测试安排、材料状态及选测依据。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "layer", "disposition", "reason"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "description": "计划内唯一的测试条目编号。" },
+              "layer": { "type": "string", "minLength": 1, "description": "所属测试层级（如 unit、integration、payload、host、e2e）。" },
+              "disposition": {
+                "type": "string",
+                "enum": ["execute", "reuse", "policy-accept", "historical-read", "uncovered", "not-applicable", "explicitly_skipped", "本次执行", "有效复用", "按版本政策接受", "历史记录读取", "未覆盖", "不适用"],
+                "description": "该条目的材料状态：区分本次真实执行、匹配复用、政策接受、仅历史读取、未覆盖、原权威确认不适用及可选测试显式跳过。"
+              },
+              "reason": { "type": "string", "minLength": 1, "description": "选择该材料状态的事实依据。" },
+              "entry": { "type": "string", "description": "本次执行时拟调用的验证入口名称或命令说明（仅作数据记录，不代表自动获准执行）。" },
+              "criterionHolder": { "type": "string", "description": "持有该项结果判定标准与解释权的职责方。" },
+              "workflowRole": { "type": "string", "enum": ["normal", "risk-failure"], "description": "首次基线中标识代表性正常路径或风险失败路径。" },
+              "coversCriteria": { "type": "array", "items": { "type": "string" }, "description": "该测试项所覆盖的验收条件编号列表。" },
+              "coversAcceptanceCriteria": { "type": "array", "items": { "type": "string" }, "description": "该测试项所覆盖的业务验收条件编号列表（与 coversCriteria 等价兼容，用于核查验收条件直接行为映射）。" },
+              "verificationDepth": { "type": "string", "enum": ["direct", "indirect", "mock"], "description": "验证深度标注：direct 表示直接驱动真实入口或业务行为，indirect 表示模块内部逻辑验证，mock 表示纯替身/模拟交互。" },
+              "mockOnly": { "type": "boolean", "description": "是否为仅验证替身/模拟调用的纯 mock 测试；为 true 时不能单独充当核心验收条件的真实行为证据。" },
+              "optional": { "type": "boolean", "description": "是否为可选测试方法；仅 optional 为 true 的条目才允许申请 explicitly_skipped。" },
+              "approvedBy": { "type": "string", "description": "批准本轮显式跳过可选测试的维护者或主控身份。" },
+              "applicabilityBoundary": { "type": "string", "description": "显式跳过成立的前提边界，以及触发恢复执行的条件。" },
+              "graphNoteOnly": { "type": "boolean", "description": "是否仅存在制品图描述节点而尚未绑定真实工程原件；为 true 时必须保持 uncovered。" },
+              "prior": { "$ref": "#/definitions/reuseSnapshot", "description": "disposition 为 reuse 时引用的历史通过六要素与原结论。" },
+              "current": { "$ref": "#/definitions/reuseSnapshot", "description": "disposition 为 reuse 时当前待测对象的六要素快照。" },
+              "policy": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "publicCoverage"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 1 },
+                  "publicCoverage": { "type": "string", "minLength": 1 }
+                },
+                "description": "disposition 为 policy-accept 时引用的公开版本覆盖政策名称与公开适用范围。"
+              },
+              "notApplicable": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["authorizedBy", "reason"],
+                "properties": {
+                  "authorizedBy": { "type": "string", "minLength": 1 },
+                  "reason": { "type": "string", "minLength": 1 }
+                },
+                "description": "disposition 为 not-applicable 时原权威出具的不适用确认方与范围依据。"
+              }
+            }
+          }
+        }
+      }
+    },
+    "runReceiptInput": {
+      "type": "object",
+      "description": "测试运行记录与核收输入（对应 sft record-run 输入）。严格区分实测通过、可选显式跳过与编排/环境未执行。",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "items"],
+      "properties": {
+        "schemaVersion": { "const": 1, "description": "运行收据输入契约版本号，固定为 1。" },
+        "subjectDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "本次被测候选对象或构建快照的 SHA-256 摘要。" },
+        "planDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "所依据的已审核测试计划 SHA-256 摘要。" },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "description": "逐项测试运行结果、复用核对或可选跳过记录。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "disposition"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "description": "测试条目唯一标识。" },
+              "requirementId": { "type": "string", "description": "关联的上游要求编号。" },
+              "optional": { "type": "boolean", "description": "是否为可选测试；必选门禁禁止使用 explicitly_skipped。" },
+              "disposition": {
+                "type": "string",
+                "enum": ["executed", "reused", "not-applicable", "explicitly_skipped", "not_executed", "failed", "incomplete", "uncovered"],
+                "description": "实际处置状态：explicitly_skipped 仅用于经批准跳过的可选测试，not_executed 专用于环境或参数故障导致的未执行。"
+              },
+              "failureKind": {
+                "type": "string",
+                "enum": ["orchestration_error", "product_failure"],
+                "description": "失败或未执行的归因类别：orchestration_error 表示 PATH/Node 版本/参数拼写等编排问题，product_failure 表示被测产品违反业务合同。"
+              },
+              "verdict": {
+                "type": "string",
+                "enum": ["passed", "failed", "not-evaluated"],
+                "description": "领域判读结论；explicitly_skipped 与 not_executed 条目必须为 not-evaluated，严禁冒充 passed。"
+              },
+              "passed": { "type": "boolean", "description": "布尔通过标记（不能与 explicitly_skipped / not_executed / 非 0 退出码 / businessComplete=false 冲突）。" },
+              "acceptedBy": { "type": "string", "description": "出具业务通过或确认不适用判断的职责方。" },
+              "approvedBy": { "type": "string", "description": "批准本轮显式跳过该可选测试的维护者身份。" },
+              "reason": { "type": "string", "description": "本次判读、失败归因或跳过原因说明。" },
+              "command": { "type": "string", "description": "实际执行或尝试执行的验证命令记录。" },
+              "applicabilityBoundary": { "type": "string", "description": "可选测试显式跳过的适用边界及需要恢复执行的触发条件。" },
+              "residualRisks": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "跳过该可选测试后留存的已知残余风险列表。" },
+              "fallbackGates": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "在跳过该可选测试期间仍在运行兜底的必选基础门禁列表。" },
+              "exitCode": { "type": "integer", "description": "命令原始进程退出码（退出码 0 本身不代表业务完成，非 0 严禁标为 passed）。" },
+              "businessComplete": { "type": "boolean", "description": "被测业务流程是否真正达到预期交付状态。" },
+              "evidence": { "type": "array", "items": { "$ref": "#/definitions/fileRef" }, "description": "支撑本次结论的原始输出或日志证据引用列表。" },
+              "prior": { "$ref": "#/definitions/reuseSnapshot", "description": "disposition 为 reused 时引用的历史通过六要素与原结论。" },
+              "current": { "$ref": "#/definitions/reuseSnapshot", "description": "disposition 为 reused 时当前待测对象的六要素快照。" }
+            }
+          }
+        }
+      }
+    },
+    "invalidationManifest": {
+      "type": "object",
+      "description": "返工或代码修改后的增量复测失效计算清单（对应 sft invalidate-changed 输入）。",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "baselineFiles", "evidenceItems"],
+      "properties": {
+        "schemaVersion": { "const": 1, "description": "增量失效清单版本号，固定为 1。" },
+        "baselineFiles": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "description": "上次测试完成时的文件相对路径到 SHA-256 摘要映射。"
+        },
+        "currentFiles": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            ]
+          },
+          "description": "修改后的文件相对路径到最新 SHA-256 摘要映射（文件已删除时设为 null；指定 --root 时禁止覆盖磁盘实时摘要）。"
+        },
+        "trackedPaths": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "在 --root 模式下额外纳入摘要扫描的新增候选相对路径列表。"
+        },
+        "criterionVersions": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "各测试条目或全局（'*'）当前生效的判据版本号，用于拦截判据升级后的旧通过记录。"
+        },
+        "evidenceItems": {
+          "type": "array",
+          "description": "待评估是否仍可安全复用的历史测试观察条目。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "verdict"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "description": "测试条目唯一标识。" },
+              "verdict": { "type": "string", "description": "上次运行的判读结论（仅 passed 条目有资格参与复用评估）。" },
+              "disposition": { "type": "string", "description": "上次运行的处置状态（explicitly_skipped 等非实测通过项一律拒绝复用）。" },
+              "criterionVersion": { "type": "string", "description": "产生上次结论时所依据的判据版本。" },
+              "dependsOnFiles": { "type": "array", "items": { "type": "string" }, "description": "该测试覆盖或依赖的源码、配置与夹具路径模式（支持 ** 通配）。" },
+              "evidenceFiles": { "type": "array", "items": { "$ref": "#/definitions/fileRef" }, "description": "上次运行留存的证据文件引用，核验磁盘原件未被篡改或删除。" }
+            }
+          }
+        }
+      }
+    },
+    "evalSmokeSuite": {
+      "type": "object",
+      "description": "接入重型工程化之前的最小代表性样本探针与跨样本防过拟合套件（对应 sft eval-smoke 输入）。",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "skillId", "samples"],
+      "properties": {
+        "schemaVersion": { "const": 1, "description": "最小探针套件契约版本号，固定为 1。" },
+        "skillId": { "type": "string", "minLength": 1, "description": "被验证的技能名称或逻辑标识。" },
+        "samples": {
+          "type": "array",
+          "minItems": 2,
+          "description": "至少 2 份内容与结构异构的真实输入样本及只读判定条件，防止针对单一样本硬编码打补丁。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "assertions"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "description": "样本唯一编号。" },
+              "scenarioKind": { "type": "string", "description": "样本代表的使用情境类型（如 normal、edge-case、noisy-input），用于辅助核验样本异构性。" },
+              "input": { "description": "内联提供的样本原始输入内容（文本或结构化对象）。" },
+              "inputFile": { "type": "string", "description": "样本输入在项目根目录下的相对文件路径。" },
+              "baselineOutput": { "description": "代码或提示词修改前的基线输出，用于检测是否破坏了原本已通过的样本。" },
+              "baselineOutputFile": { "type": "string", "description": "修改前基线输出的相对文件路径。" },
+              "candidateOutput": { "description": "本轮修改后的候选输出内容。" },
+              "candidateOutputFile": { "type": "string", "description": "修改后候选输出的相对文件路径。" },
+              "assertions": {
+                "type": "object",
+                "description": "只读、确定性的结果核对条件。",
+                "additionalProperties": false,
+                "properties": {
+                  "minLength": { "type": "integer", "minimum": 0, "description": "去首尾空白后的最小字符长度。" },
+                  "requiredSubstrings": { "type": "array", "items": { "type": "string" }, "description": "输出中必须包含的关键文本片段列表。" },
+                  "forbiddenSubstrings": { "type": "array", "items": { "type": "string" }, "description": "输出中严禁出现的错误标记、占位符或敏感片段列表。" },
+                  "requiredJsonFields": { "type": "array", "items": { "type": "string" }, "description": "当输出为 JSON 对象时必须存在的非空顶层字段列表。" },
+                  "equalsJsonFields": { "type": "object", "description": "当输出为 JSON 对象时必须精确匹配的字段键值对。" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

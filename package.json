@@ -1,6 +1,6 @@
 {
   "name": "skill-family-test",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": false,
   "description": "技能族确定性测试计划校验、运行收据核收、增量失效计算与多样本防过拟合 CLI（sft）。",
   "author": "广州市风荷科技有限公司",

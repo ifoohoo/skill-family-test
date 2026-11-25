@@ -113,6 +113,7 @@ function parseCliArgs(argv) {
     );
   }
   args.format = explicitFormat ?? (hasJsonFlag ? "json" : "json");
+  args.jsonRequested = hasJsonFlag || explicitFormat === "json";
   return args;
 }
 
@@ -152,11 +153,41 @@ export async function runCli(argv, io = { stdout: process.stdout, stderr: proces
   try {
     const args = parseCliArgs(argv);
     if (args.help || argv.length === 0) {
-      io.stdout.write(CLI_HELP_TEXT);
+      if (args.jsonRequested) {
+        io.stdout.write(
+          `${JSON.stringify(
+            {
+              name: "skill-family-test",
+              bin: "sft",
+              version: SFT_PACKAGE_VERSION,
+              subcommands: [...SUPPORTED_SUBCOMMANDS],
+              usage: "sft <subcommand> --input <path> [--root <dir>] [--out <relPath>] [--format <json|markdown> | --json]",
+            },
+            null,
+            2,
+          )}\n`,
+        );
+      } else {
+        io.stdout.write(CLI_HELP_TEXT);
+      }
       return SFT_EXIT_CODES.OK;
     }
     if (args.version) {
-      io.stdout.write(`${SFT_PACKAGE_VERSION}\n`);
+      if (args.jsonRequested) {
+        io.stdout.write(
+          `${JSON.stringify(
+            {
+              name: "skill-family-test",
+              bin: "sft",
+              version: SFT_PACKAGE_VERSION,
+            },
+            null,
+            2,
+          )}\n`,
+        );
+      } else {
+        io.stdout.write(`${SFT_PACKAGE_VERSION}\n`);
+      }
       return SFT_EXIT_CODES.OK;
     }
     if (!args.subcommand || !SUPPORTED_SUBCOMMANDS.has(args.subcommand)) {

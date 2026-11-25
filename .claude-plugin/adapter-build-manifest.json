@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "skill-family.adapter-build-manifest",
+  "hostId": "claude",
+  "pathCategory": {
+    "id": "claude-project-skills",
+    "scope": "project",
+    "anchor": "project-root",
+    "relPath": ".claude/skills"
+  },
+  "sourceClosure": {
+    "digest": "fec1a4f40c1a0a8a30bac47e60066bb0af2a51883b34db29614883cead802895",
+    "members": [
+      {
+        "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
+        "sha256": "01615451d4525a215877031ade994f1f8562f833f15c1ee401d6197f0dad9961",
+        "bytes": 15267
+      },
+      {
+        "sourcePath": "skill-family-test-plan/SKILL.md",
+        "sha256": "958545d7178d53f94d240f980dcd5957a190ca089196333f98c4b15567594186",
+        "bytes": 7556
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/testing-methodology.md",
+        "sha256": "01615451d4525a215877031ade994f1f8562f833f15c1ee401d6197f0dad9961",
+        "bytes": 15267
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
+        "sha256": "f0df7c1c22b8e853fc7cefecc8ee963958b2984ecb94416934674c1b95fdf419",
+        "bytes": 33622
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/SOURCE.md",
+        "sha256": "72c1366e341683c46095028628318d03665dd2583ab9e6b69ad22a5a553e2f98",
+        "bytes": 860
+      },
+      {
+        "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/test-intake.schema.json",
+        "sha256": "fd39f338dfd15c6d96e8ff5ab8150fb4e0c919198c2a273e41a537c5a255382f",
+        "bytes": 11070
+      },
+      {
+        "sourcePath": "skill-family-test-run/SKILL.md",
+        "sha256": "fc9a8e9bbe621e0857c911b8f25565036138a2afe699ab9a366b16d47b52dbd3",
+        "bytes": 6600
+      }
+    ]
+  },
+  "members": [
+    {
+      "sourcePath": "skill-family-test-plan/references/testing-methodology.md",
+      "target": ".claude/skills/skill-family-test-plan/references/testing-methodology.md",
+      "sha256": "01615451d4525a215877031ade994f1f8562f833f15c1ee401d6197f0dad9961",
+      "bytes": 15267
+    },
+    {
+      "sourcePath": "skill-family-test-plan/SKILL.md",
+      "target": ".claude/skills/skill-family-test-plan/SKILL.md",
+      "sha256": "958545d7178d53f94d240f980dcd5957a190ca089196333f98c4b15567594186",
+      "bytes": 7556
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/testing-methodology.md",
+      "target": ".claude/skills/skill-family-test-run/references/testing-methodology.md",
+      "sha256": "01615451d4525a215877031ade994f1f8562f833f15c1ee401d6197f0dad9961",
+      "bytes": 15267
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
+      "target": ".claude/skills/skill-family-test-run/references/upstream/release-skill-0.9.34/02-project-config.md",
+      "sha256": "f0df7c1c22b8e853fc7cefecc8ee963958b2984ecb94416934674c1b95fdf419",
+      "bytes": 33622
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/SOURCE.md",
+      "target": ".claude/skills/skill-family-test-run/references/upstream/release-skill-0.9.34/SOURCE.md",
+      "sha256": "72c1366e341683c46095028628318d03665dd2583ab9e6b69ad22a5a553e2f98",
+      "bytes": 860
+    },
+    {
+      "sourcePath": "skill-family-test-run/references/upstream/release-skill-0.9.34/test-intake.schema.json",
+      "target": ".claude/skills/skill-family-test-run/references/upstream/release-skill-0.9.34/test-intake.schema.json",
+      "sha256": "fd39f338dfd15c6d96e8ff5ab8150fb4e0c919198c2a273e41a537c5a255382f",
+      "bytes": 11070
+    },
+    {
+      "sourcePath": "skill-family-test-run/SKILL.md",
+      "target": ".claude/skills/skill-family-test-run/SKILL.md",
+      "sha256": "fc9a8e9bbe621e0857c911b8f25565036138a2afe699ab9a366b16d47b52dbd3",
+      "bytes": 6600
+    }
+  ],
+  "digest": "748dd5f8e951fe161da3e4a961a94a03ae9914c3d5cd7daa9695a5822f230dcb"
+}

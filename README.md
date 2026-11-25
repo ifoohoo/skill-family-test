@@ -1,76 +1,97 @@
 # Skill Family Test
 
-本插件面向 Codex 用户，提供两个协同入口：`skill-family-test:skill-family-test-plan` 用于制定有边界的测试方案，`skill-family-test:skill-family-test-run` 用于依据已接受方案组织已授权的真实执行或有效复用，并将结果写入调用方指定的 `resultFile`。插件不签发通过或发布授权，不新增执行器、报告协议或宿主支持。
+本插件面向多宿主智能体环境（OpenAI Codex、Claude Code、Kimi Code、Qoder、WorkBuddy / CodeBuddy 及 Antigravity），提供测试规划与执行核收两个协同技能入口，帮助技能族项目围绕本轮真实变更制定有边界的测试方案、安全复用未受影响的既有证据，并在授权范围内核收测试结果。插件本身不签发业务通过或发布批准，所有领域判读权仍归原责任方。
 
-本次产品版本为 `0.2.1`。父工程与 `packages/skill-family-test` 工程种子均保持私有，种子版本 `0.0.0` 不是产品版本，本轮不发布 npm 包。
-
----
-
-## 入口说明
-
-| 入口 | 功能 |
-|------|------|
-| `skill-family-test:skill-family-test-plan` | 仅制定测试方案，不执行被测对象。根据本轮变更、业务承诺和已有证据，区分本次执行、有效复用与未覆盖项。 |
-| `skill-family-test:skill-family-test-run` | 依已接受方案与用户明确授权执行，组织真实执行或复用，并将逐项结果写入调用方授权的 `resultFile`。不自动获得提交、推送或发布权限。 |
-
-随附资源位于各入口对应的 `SKILL.md` 所在目录。测试方法正文为 `references/testing-methodology.md`，修订身份为 `design-testing-methodology@0.1.2`，由生成器投影，不可单独修改。发布形态交接读取已发布 `release-skill@0.9.34` 的 `references/upstream/release-skill-0.9.34/` 原文。
-
-本版随公开插件提供 `agent-methods/catalog.yaml`，以 `skill-family-test.plan` 和 `skill-family-test.run` 登记两个入口，供已采用方法注册中心的工程选择。目录身份与插件产品版本保持一致。设计开发流与发布流仍由各自的编排技能负责，测试方案和执行结果的职责不变。
-
-开发夹具仅用于明确的开发回归任务，普通安装与调用不依赖。
+当前公开插件版本由根目录 `VERSION` 定义（`0.2.2`）。
 
 ---
 
-## 固定版本安装
+## 入口与方法目录
+
+| 技能入口 | 职责与边界 |
+| --- | --- |
+| `skill-family-test-plan` | 只制定测试方案，不运行被测产品。根据交付阶段、本轮变更、业务承诺与既有证据，明确划分本次执行、有效复用、可选显式跳过与未覆盖项，禁止在规划阶段预填通过结论。 |
+| `skill-family-test-run` | 依据已接受方案和用户明确授权组织真实运行或增量复用，区分环境未执行与产品失败，并将逐项核收结果写入调用方授权的 `resultFile` 或收据路径。 |
+
+随附的测试方法参考位于各技能目录下的 `references/testing-methodology.md`（修订身份 `design-testing-methodology@0.1.2`，由构建器受管投影生成，不可单独手改）。进入正式发布流程时，按随包携带的 `references/upstream/release-skill-0.9.34/` 公开规范交接候选结果。
+
+公开载荷同时提供：
+- 六大宿主插件清单：`.codex-plugin/plugin.json`、`.claude-plugin/plugin.json`、`.codebuddy-plugin/plugin.json`、`.kimi-plugin/plugin.json`、`.qoder-plugin/plugin.json` 与根级 `plugin.json`（Antigravity）；
+- 方法注册目录：`agent-methods/catalog.yaml`（登记 `skill-family-test.plan` 与 `skill-family-test.run` 两个逻辑入口，供接入 `agent-method-registry` 的项目按需解析绑定）。
+
+开发回归夹具仅在明确声明的开发回归任务中按需读取，普通安装与日常调用不依赖任何开发夹具。
+
+---
+
+## 固定版本安装（插件 + 公开 npm 包）
 
 <!-- release-skill:capability:safe-first-command -->
 
-请严格使用以下命令，从公开仓库固定标签 `skill-family-test-v0.2.1` 安装 `0.2.1` 版本：
+完整接入 `skill-family-test` 包含两步：**在 AI 宿主安装 `skill-family-test` 插件**，以及**在项目或环境中安装公开 npm 包 `skill-family-test`（提供 `sft` CLI）**。
+
+1. **安装 AI 宿主插件**
+
+   在 Codex 中，使用以下命令从公开仓库固定标签 `skill-family-test-v0.2.2` 安装本插件：
+
+   ```sh
+   codex plugin marketplace add ifoohoo/skill-family-test --ref skill-family-test-v0.2.2
+   codex plugin add skill-family-test@skill-family-test
+   ```
+
+   在 Claude Code、Kimi Code、Qoder 或 WorkBuddy / CodeBuddy 中，可按各宿主的插件市场或仓库安装命令指向同一公开仓库固定标签 `skill-family-test-v0.2.2`（对应读取 `.claude-plugin/plugin.json`、`.kimi-plugin/plugin.json`、`.qoder-plugin/plugin.json` 或 `.codebuddy-plugin/plugin.json`）。在 Google Antigravity 中，将固定版本仓库克隆至 `~/.gemini/config/plugins/skill-family-test`，宿主会自动识别根级 `plugin.json`。
+
+   安装并启用插件后，**当前已打开的会话不会自动热加载新入口**；请新开一个宿主会话后再调用两个测试技能。
+
+2. **安装公开 npm 包 `skill-family-test`（提供 `sft` CLI）**
+
+   在需要执行确定性计划校验、收据核收、增量失效计算或防过拟合探针的项目或环境（Node.js `>=22.22.2 <23`）安装公开 npm 包：
+
+   ```sh
+   pnpm add -D skill-family-test
+   # 或
+   npm install -D skill-family-test
+   ```
+
+---
+
+## 标准使用流程与 CLI 辅助
+
+1. **制定测试方案**：调用 `skill-family-test-plan`，传入本轮变更说明、交付阶段、业务承诺与已有测试证据，获得带明确停止条件的测试计划。
+2. **审阅与授权**：确认计划中的本次执行项、复用依据与可选跳过边界，对需要实际运行的检查命令给出明确授权。
+3. **执行与结果核收**：调用 `skill-family-test-run` 并指定输出路径，按计划组织运行、隔离编排异常与产品缺陷，输出结构化核收记录。
+
+安装公开 npm 包 `skill-family-test` 后，即可直接通过 `npx sft` 调用确定性 CLI 完成机器校验与报告渲染：
 
 ```sh
-codex plugin marketplace add ifoohoo/skill-family-test --ref skill-family-test-v0.2.1
-codex plugin add skill-family-test@skill-family-test
+npx sft validate-plan --root /absolute/project/path --input test-plan.json --format markdown
+npx sft record-run --root /absolute/project/path --input run-input.json --out receipt.json --format markdown
+npx sft invalidate-changed --root /absolute/project/path --input invalidation-manifest.json --format markdown
+npx sft eval-smoke --root /absolute/project/path --input smoke-suite.json --format markdown
 ```
 
-安装完成后，在 Codex 的已安装插件列表中确认 `skill-family-test` 已启用。**安装与启用不代表当前会话已加载入口**；需新开 Codex 会话后，方可确认两个入口均可调用。
-
 ---
 
-## 首次使用步骤
+## 常见故障排查
 
-1. 调用 `skill-family-test:skill-family-test-plan`，提供本轮变更、业务承诺与已有证据，由插件生成测试方案，明确区分本次执行、有效复用与未覆盖项。
-2. 接受方案，并对需执行的检查项明确授权。
-3. 调用 `skill-family-test:skill-family-test-run`，传入授权的 `resultFile` 路径，插件将按方案核收结果并写入。
-
-> **执行前提**：首次规划调用不运行被测对象。执行入口必须以已接受方案和用户明确授权为前提，并将结果写入调用方授权的 `resultFile`；它不自动获得提交、推送或发布权限。
-
----
-
-## 故障排查
-
-若入口无法调用或执行失败，可先用 Codex 原生命令查看插件命令的用法：
+若在 Codex 中无法发现或调用技能入口，先通过原生帮助命令核对插件子命令语法：
 
 ```sh
 codex plugin --help
 ```
 
-- **插件未安装或未启用**：在 Codex 的已安装插件列表中确认 `skill-family-test` 已安装并启用；`codex plugin --help` 用于查看命令帮助，不是插件状态列表。
-- **当前会话未加载入口**：安装启用后需**新开 Codex 会话**，入口方可生效。
-- **命令执行报错**：检查命令返回的错误信息，对照 `codex plugin --help` 核对用法与参数。
+- **入口未出现在可用技能列表**：先检查宿主插件列表中 `skill-family-test` 是否处于已安装且启用状态（`codex plugin --help` 仅输出命令行用法，不展示已安装列表），确认无误后**新开一个会话**使入口生效。
+- **执行阶段拒绝运行某条命令**：核对是否已先接受测试方案并对该检查项给出了明确执行授权；仅写在方案里的命令文本不会自动获准运行。
+- **`sft` CLI 报路径或摘要错误**：根据终端输出的 `[SFT_*]` 错误提示核对 `--root` 是否指向项目根目录、引用文件是否为普通文件（非软链接），以及设计原件修改后是否已刷新摘要。
 
 ---
 
-## 使用边界与后续
+## 安全与权责边界
 
 <!-- release-skill:capability:external-write-boundary -->
 
-执行入口只按已接受方案和用户明确授权核收结果，不自动获得提交、推送或发布权限。
+测试执行入口只按已接受方案与用户的明确授权组织检查并写入指定收据，**绝不自动获得 Git 提交、推送、打标签或公开发布权限**。
 
-- 规划阶段不得将任何检查项标记为“通过”。
-- 缺证、失败、未完成或未覆盖项，执行入口不接受其作为有效候选。
-- 独立验收材料由持有方保管，不进入开发、提示或示例上下文。
-- 许可证为 Apache-2.0，作者为广州市风荷科技有限公司。
-- 公开树不含私有 SPEC、图锁、开发判据、运行记录或独立验收原件。
-
-下一步为新开 Codex 会话，调用入口并参考随附 `references/testing-methodology.md` 了解测试方法。
-
+- 规划阶段严禁将任何检查项预标为“通过”；可选测试的显式跳过（`explicitly_skipped`）固定为“未评估”，绝不等同于测试通过。
+- 存在缺证、失败、环境未执行或未覆盖的必测项时，整案不作为合格候选接受。
+- 独立验收材料由验收持有方隔离保管，不进入开发调试、提示词调优或公开示例上下文。
+- 公开产物采用 Apache-2.0 许可证，由广州市风荷科技有限公司维护，不含私有实施规格、制品图锁、开发判据、运行日志或隐藏验收原件。

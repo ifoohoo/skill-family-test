@@ -1,6 +1,6 @@
 # 来源说明
 
-本目录存放已发布 `release-skill@0.9.34` 的原字节公开参考，供本技能族在发布形态交接时引用。不把私有 `integration-contract` 规格另写成权威。
+本目录存放已发布 `release-skill@0.9.34` 的公开契约参考（`test-intake.schema.json` 保留与 `0.9.34` 完全一致的字段结构、必填项与枚举集合，仅补充中文 `description` 说明），供本技能族在发布形态交接时引用。不把私有 `integration-contract` 规格另写成权威。
 
 | 文件 | 已发布包内路径 | 用途 |
 | --- | --- | --- |

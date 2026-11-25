@@ -2,39 +2,45 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://release-skill.dev/schemas/test-intake/v1",
   "title": "Release test intake documents",
-  "description": "Requirements, results, candidate, and testAcceptance documents for an explicit testIntake release. Unknown fields are rejected.",
+  "description": "release-skill@0.9.34 显式测试核收（testIntake）四类交接文档契约：需求清单（requirementsDocument）、执行结果（resultDocument）、冻结候选（candidate）与测试接受记录（testAcceptance）。所有未知扩展字段一律拒绝。",
   "$ref": "#/definitions/candidate",
   "definitions": {
     "fileRef": {
       "type": "object",
+      "description": "项目根目录内的安全相对路径文件引用及 SHA-256 摘要。",
       "additionalProperties": false,
       "required": ["path", "sha256"],
       "properties": {
         "path": {
           "type": "string",
           "minLength": 1,
-          "pattern": "^(?!/)(?!.*\\\\)(?!.*\\u0000)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*/$).+$"
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*\\u0000)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*/$).+$",
+          "description": "项目内规范化相对 POSIX 路径，禁止前导斜杠、反斜杠、空字节或父目录跳转。"
         },
         "sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "文件原始内容的 64 位小写十六进制 SHA-256 摘要。"
         },
         "anchor": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "description": "可选的文档内部章节或条款锚点。"
         }
       }
     },
     "requirement": {
       "type": "object",
+      "description": "单条发布测试需求声明，绑定需求来源、判定依据、责任人与验收阶段。",
       "additionalProperties": false,
       "required": ["id", "source", "criterion", "owner", "scope", "phase", "acceptor"],
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "source": { "$ref": "#/definitions/fileRef" },
-        "criterion": { "$ref": "#/definitions/fileRef" },
-        "owner": { "type": "string", "minLength": 1 },
+        "id": { "type": "string", "minLength": 1, "description": "测试需求唯一标识。" },
+        "source": { "$ref": "#/definitions/fileRef", "description": "提出该测试需求的源文档引用。" },
+        "criterion": { "$ref": "#/definitions/fileRef", "description": "承载通过判定标准的文档引用。" },
+        "owner": { "type": "string", "minLength": 1, "description": "负责维护该测试需求的职责方。" },
         "scope": {
+          "description": "测试需求作用范围：整个项目（project）或指定发布单元（unit）。",
           "oneOf": [
             {
               "type": "object",
@@ -55,10 +61,11 @@
         },
         "phase": {
           "type": "string",
-          "enum": ["pre-freeze", "consumer-verify", "postverify", "finish"]
+          "enum": ["pre-freeze", "consumer-verify", "postverify", "finish"],
+          "description": "需求所属发布核验阶段：pre-freeze 在候选批准前完成核收，后续阶段通过 handoff 移交。"
         },
-        "acceptor": { "type": "string", "minLength": 1 },
-        "handoff": { "$ref": "#/definitions/handoff" }
+        "acceptor": { "type": "string", "minLength": 1, "description": "有权确认该测试需求通过或不适用的验收职责方。" },
+        "handoff": { "$ref": "#/definitions/handoff", "description": "非冻结前阶段移交给发布门禁、钩子或收尾步骤的承接标识。" }
       },
       "allOf": [
         {
@@ -79,28 +86,32 @@
     },
     "handoff": {
       "type": "object",
+      "description": "跨阶段测试移交目标声明。",
       "additionalProperties": false,
       "required": ["kind", "id"],
       "properties": {
-        "kind": { "type": "string", "enum": ["gate", "hook", "finish"] },
-        "id": { "type": "string", "minLength": 1 }
+        "kind": { "type": "string", "enum": ["gate", "hook", "finish"], "description": "承接载体类别：门禁（gate）、钩子（hook）或收尾阶段（finish）。" },
+        "id": { "type": "string", "minLength": 1, "description": "目标门禁、钩子或收尾步骤标识。" }
       }
     },
     "requirementsDocument": {
       "type": "object",
+      "description": "发布测试需求清单文档（requirements.json）。",
       "additionalProperties": false,
       "required": ["formatVersion", "requirements"],
       "properties": {
-        "formatVersion": { "const": 1 },
+        "formatVersion": { "const": 1, "description": "文档格式版本号，固定为 1。" },
         "requirements": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/definitions/requirement" }
+          "items": { "$ref": "#/definitions/requirement" },
+          "description": "至少包含一条测试需求的有序列表。"
         }
       }
     },
     "resultItem": {
       "type": "object",
+      "description": "单条发布测试需求的核收记录及证据绑定。",
       "additionalProperties": false,
       "required": [
         "requirementId",
@@ -113,44 +124,51 @@
         "limitations"
       ],
       "properties": {
-        "requirementId": { "type": "string", "minLength": 1 },
+        "requirementId": { "type": "string", "minLength": 1, "description": "对应的测试需求编号。" },
         "disposition": {
           "type": "string",
-          "enum": ["executed", "reused", "not-applicable", "failed", "incomplete", "uncovered"]
+          "enum": ["executed", "reused", "not-applicable", "failed", "incomplete", "uncovered"],
+          "description": "本轮材料处置状态（release-skill@0.9.34 枚举集）。"
         },
         "verdict": {
           "type": "string",
-          "enum": ["passed", "failed", "not-evaluated"]
+          "enum": ["passed", "failed", "not-evaluated"],
+          "description": "原领域验收方给出的测试判读结论。"
         },
-        "acceptedBy": { "type": "string", "minLength": 1 },
-        "decision": { "$ref": "#/definitions/fileRef" },
+        "acceptedBy": { "type": "string", "minLength": 1, "description": "出具本次结论的验收职责方标识。" },
+        "decision": { "$ref": "#/definitions/fileRef", "description": "记录本次判读结论的裁决文件引用。" },
         "evidence": {
           "type": "array",
-          "items": { "$ref": "#/definitions/fileRef" }
+          "items": { "$ref": "#/definitions/fileRef" },
+          "description": "支撑本次结论的原始测试证据文件列表。"
         },
-        "applicability": { "$ref": "#/definitions/fileRef" },
+        "applicability": { "$ref": "#/definitions/fileRef", "description": "复用或适用范围核验说明文件引用。" },
         "limitations": {
           "type": "array",
-          "items": { "$ref": "#/definitions/fileRef" }
+          "items": { "$ref": "#/definitions/fileRef" },
+          "description": "已知验证边界或残余风险说明文件列表。"
         }
       }
     },
     "resultDocument": {
       "type": "object",
+      "description": "绑定候选对象摘要与需求清单摘要的测试结果文档（result.json）。",
       "additionalProperties": false,
       "required": ["formatVersion", "subjectDigest", "requirementsSha256", "results"],
       "properties": {
-        "formatVersion": { "const": 1 },
-        "subjectDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-        "requirementsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "formatVersion": { "const": 1, "description": "文档格式版本号，固定为 1。" },
+        "subjectDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "被测候选对象的 SHA-256 摘要。" },
+        "requirementsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "所依据的 requirements.json 文件 SHA-256 摘要。" },
         "results": {
           "type": "array",
-          "items": { "$ref": "#/definitions/resultItem" }
+          "items": { "$ref": "#/definitions/resultItem" },
+          "description": "逐项测试核收结果记录。"
         }
       }
     },
     "testAcceptance": {
       "type": "object",
+      "description": "候选批准前固化的测试接受汇总记录。",
       "additionalProperties": false,
       "required": [
         "formatVersion",
@@ -161,50 +179,57 @@
         "deferredRequirementIds"
       ],
       "properties": {
-        "formatVersion": { "const": 1 },
-        "subjectDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-        "requirements": { "$ref": "#/definitions/fileRef" },
-        "result": { "$ref": "#/definitions/fileRef" },
+        "formatVersion": { "const": 1, "description": "文档格式版本号，固定为 1。" },
+        "subjectDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "被接受候选对象的 SHA-256 摘要。" },
+        "requirements": { "$ref": "#/definitions/fileRef", "description": "需求清单文件引用。" },
+        "result": { "$ref": "#/definitions/fileRef", "description": "测试结果文档文件引用。" },
         "acceptedRequirementIds": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1 }
+          "items": { "type": "string", "minLength": 1 },
+          "description": "已在冻结前阶段完成核收的需求编号列表。"
         },
         "deferredRequirementIds": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1 }
+          "items": { "type": "string", "minLength": 1 },
+          "description": "按约定移交发布后阶段继续验证的需求编号列表。"
         }
       }
     },
     "candidate": {
       "type": "object",
+      "description": "release-skill 生成并供测试职能只读核对的发布候选清单。",
       "additionalProperties": false,
       "required": ["candidateVersion", "writerVersion", "prepareOptions", "requirements", "prepared"],
       "properties": {
-        "candidateVersion": { "const": 1 },
-        "writerVersion": { "type": "string", "minLength": 1 },
+        "candidateVersion": { "const": 1, "description": "候选文档契约版本号，固定为 1。" },
+        "writerVersion": { "type": "string", "minLength": 1, "description": "写出该候选文件的 release-skill 版本号。" },
         "prepareOptions": {
           "type": "object",
+          "description": "准备本次发布候选时使用的工作流与单元参数。",
           "additionalProperties": false,
           "required": ["workflow", "offline", "production", "unitIds", "unitVersions"],
           "properties": {
-            "workflow": { "type": "string", "enum": ["full", "docs", "config", "marketplace"] },
-            "offline": { "type": "boolean" },
-            "production": { "const": true },
+            "workflow": { "type": "string", "enum": ["full", "docs", "config", "marketplace"], "description": "发布工作流类型。" },
+            "offline": { "type": "boolean", "description": "是否为离线准备模式。" },
+            "production": { "const": true, "description": "生产发布标记，固定为 true。" },
             "unitIds": {
               "type": "array",
-              "items": { "type": "string", "minLength": 1 }
+              "items": { "type": "string", "minLength": 1 },
+              "description": "本次纳入发布的单元标识列表。"
             },
             "unitVersions": {
               "type": "object",
-              "additionalProperties": { "type": "string", "minLength": 1 }
+              "additionalProperties": { "type": "string", "minLength": 1 },
+              "description": "各发布单元标识到目标版本号的映射。"
             }
           }
         },
-        "requirements": { "$ref": "#/definitions/fileRef" },
+        "requirements": { "$ref": "#/definitions/fileRef", "description": "关联的测试需求清单文件引用。" },
         "prepared": {
           "type": "object",
+          "description": "由 release-skill 维护的准备态元数据（禁止外部伪造已批准状态字段）。",
           "properties": {
             "status": false,
             "digest": false,

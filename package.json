@@ -1,8 +1,8 @@
 {
   "name": "skill-family-test",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": false,
-  "description": "技能族确定性测试计划校验、运行收据核收、增量失效计算与多样本防过拟合 CLI（sft）。",
+  "description": "技能族确定性测试计划校验、运行收据核收、增量失效计算、外部工具替身封存回放与多样本防过拟合 CLI（sft）。",
   "author": "广州市风荷科技有限公司",
   "license": "Apache-2.0",
   "homepage": "https://github.com/ifoohoo/skill-family-test",
@@ -16,7 +16,8 @@
     "sft",
     "cli",
     "test-plan",
-    "validation"
+    "validation",
+    "mock-replay"
   ],
   "publishConfig": {
     "access": "public"
@@ -31,6 +32,7 @@
   "exports": {
     ".": "./src/index.mjs",
     "./cli": "./src/cli.mjs",
+    "./tool-mock-replay": "./src/tool-mock-replay.mjs",
     "./schemas/*": "./schemas/*"
   },
   "files": [
@@ -42,8 +44,8 @@
     "NOTICE"
   ],
   "dependencies": {
-    "skill-family-contracts": "0.39.0",
-    "skill-family-harness-node": "0.39.0"
+    "skill-family-contracts": "0.39.2",
+    "skill-family-harness-node": "0.39.2"
   },
   "scripts": {
     "check": "node --test",

@@ -11,6 +11,7 @@ import { readContainedJson, readExternalTextStrict, writeContainedJsonAtomic, wr
 import { invalidateChangedTests } from "./invalidate-changed.mjs";
 import { recordTestRun } from "./record-run.mjs";
 import { renderAcceptanceReport } from "./report.mjs";
+import { sealToolMockFixture, verifyToolReplayRun } from "./tool-mock-replay.mjs";
 import { validateTestPlan } from "./validate-plan.mjs";
 
 const SFT_PACKAGE_VERSION = JSON.parse(
@@ -22,6 +23,8 @@ const SUPPORTED_SUBCOMMANDS = new Set([
   "record-run",
   "invalidate-changed",
   "eval-smoke",
+  "seal-mock",
+  "verify-replay",
   "render-report",
 ]);
 
@@ -35,6 +38,8 @@ export const CLI_HELP_TEXT = `sft —— 技能族测试规划校验、运行收
   record-run          核收真实测试运行结果，生成含 explicitly_skipped 与编排/产品失败隔离的结构化收据
   invalidate-changed  对比变更前后的文件 SHA-256 摘要，精确计算可安全复用的测试与必须重跑的失效项
   eval-smoke          运行工程化前最小代表性样本集探针（强制 ≥2 份异构样本并对比修改前后跨样本回归）
+  seal-mock           脱敏并封存外部工具 / MCP / CLI I/O 录制夹具（绑定规范化参数与输出摘要）
+  verify-replay       在不触碰外部系统的前提下离线回放校验工具调用序列与必选期望消费闭环
   render-report       将结构化核收结果渲染为结论前置的 Markdown 报告（支持 --out 落盘）
 
 选项：
@@ -193,7 +198,13 @@ export async function runCli(argv, io = { stdout: process.stdout, stderr: proces
     if (!args.subcommand || !SUPPORTED_SUBCOMMANDS.has(args.subcommand)) {
       throw createSftError(
         SFT_ERROR_CODES.INVALID_ARGS,
-        `未知的子命令 "${String(args.subcommand ?? "")}"；可用子命令为 validate-plan、record-run、invalidate-changed、eval-smoke、render-report。`,
+        `未知的子命令 "${String(args.subcommand ?? "")}"；可用子命令为 validate-plan、record-run、invalidate-changed、eval-smoke、seal-mock、verify-replay、render-report。`,
+      );
+    }
+    if ((args.subcommand === "seal-mock" || args.subcommand === "verify-replay") && args.format === "markdown") {
+      throw createSftError(
+        SFT_ERROR_CODES.INVALID_ARGS,
+        `子命令 "${args.subcommand}" 输出受控 JSON 夹具/收据，不支持 --format markdown。`,
       );
     }
 
@@ -220,6 +231,18 @@ export async function runCli(argv, io = { stdout: process.stdout, stderr: proces
       }
     } else if (args.subcommand === "eval-smoke") {
       result = await evaluateSmokeSamples(inputData, { root: effectiveRoot });
+      passed = result.passed;
+      if (args.out) {
+        await writeContainedJsonAtomic(effectiveRoot, args.out, result);
+      }
+    } else if (args.subcommand === "seal-mock") {
+      result = sealToolMockFixture(inputData);
+      passed = true;
+      if (args.out) {
+        await writeContainedJsonAtomic(effectiveRoot, args.out, result);
+      }
+    } else if (args.subcommand === "verify-replay") {
+      result = verifyToolReplayRun(inputData);
       passed = result.passed;
       if (args.out) {
         await writeContainedJsonAtomic(effectiveRoot, args.out, result);

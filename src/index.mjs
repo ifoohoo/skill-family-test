@@ -10,5 +10,16 @@ export { validateTestPlan } from "./validate-plan.mjs";
 export { recordTestRun } from "./record-run.mjs";
 export { invalidateChangedTests } from "./invalidate-changed.mjs";
 export { evaluateSmokeSamples } from "./eval-smoke.mjs";
+export {
+  TOOL_MOCK_FIXTURE_KIND,
+  TOOL_REPLAY_RECEIPT_KIND,
+  canonicalizeMockArgs,
+  computeCanonicalArgsSha256,
+  createDeterministicToolReplayer,
+  redactMockSecrets,
+  sealToolMockFixture,
+  verifyToolMockFixtureSeal,
+  verifyToolReplayRun,
+} from "./tool-mock-replay.mjs";
 export { ACCEPTANCE_REPORT_TEMPLATE, renderAcceptanceReport } from "./report.mjs";
 export { CLI_HELP_TEXT, runCli } from "./cli.mjs";

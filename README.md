@@ -2,7 +2,7 @@
 
 本插件面向多宿主智能体环境（OpenAI Codex、Claude Code、Kimi Code、Qoder、WorkBuddy / CodeBuddy 及 Antigravity），提供测试规划与执行核收两个协同技能入口，帮助技能族项目围绕本轮真实变更制定有边界的测试方案、安全复用未受影响的既有证据，并在授权范围内核收测试结果。插件本身不签发业务通过或发布批准，所有领域判读权仍归原责任方。
 
-当前公开插件版本由根目录 `VERSION` 定义（`0.2.3`）。
+当前公开插件版本由根目录 `VERSION` 定义（`0.2.4`）。
 
 ---
 
@@ -31,14 +31,14 @@
 
 1. **安装 AI 宿主插件**
 
-   在 Codex 中，使用以下命令从公开仓库固定标签 `skill-family-test-v0.2.3` 安装本插件：
+   在 Codex 中，使用以下命令从公开仓库固定标签 `skill-family-test-v0.2.4` 安装本插件：
 
    ```sh
-   codex plugin marketplace add ifoohoo/skill-family-test --ref skill-family-test-v0.2.3
+   codex plugin marketplace add ifoohoo/skill-family-test --ref skill-family-test-v0.2.4
    codex plugin add skill-family-test@skill-family-test
    ```
 
-   在 Claude Code、Kimi Code、Qoder 或 WorkBuddy / CodeBuddy 中，可按各宿主的插件市场或仓库安装命令指向同一公开仓库固定标签 `skill-family-test-v0.2.3`（对应读取 `.claude-plugin/plugin.json`、`.kimi-plugin/plugin.json`、`.qoder-plugin/plugin.json` 或 `.codebuddy-plugin/plugin.json`）。在 Google Antigravity 中，将固定版本仓库克隆至 `~/.gemini/config/plugins/skill-family-test`，宿主会自动识别根级 `plugin.json`。
+   在 Claude Code、Kimi Code、Qoder 或 WorkBuddy / CodeBuddy 中，可按各宿主的插件市场或仓库安装命令指向同一公开仓库固定标签 `skill-family-test-v0.2.4`（对应读取 `.claude-plugin/plugin.json`、`.kimi-plugin/plugin.json`、`.qoder-plugin/plugin.json` 或 `.codebuddy-plugin/plugin.json`）。在 Google Antigravity 中，将固定版本仓库克隆至 `~/.gemini/config/plugins/skill-family-test`，宿主会自动识别根级 `plugin.json`。
 
    安装并启用插件后，**当前已打开的会话不会自动热加载新入口**；请新开一个宿主会话后再调用两个测试技能。
 

@@ -1,7 +1,7 @@
 schemaVersion: 1
 catalog:
   id: skill-family-test
-  version: "0.2.3"
+  version: "0.2.4"
 entries:
   - ref: skill-family-test.plan
     provider:
